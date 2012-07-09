@@ -2,7 +2,7 @@
 %%% @author Alexander Neganov <ikkeps@gmail.com>
 %%%
 %%% @doc
-%%% This module parses forms that cames from {@see nakaz_pt:parse_transform
+%%% This module parses forms that cames from {@see nakaz_pt:parse_transform}
 %%% and extracts all records specs. If record spec is unsupported
 %%% (in case if some fields have unsupported notation), record spec
 %%% is marked as 'unsupported' with line number and module name information.
@@ -111,7 +111,7 @@ handle_value_param({type,_, Type, Args}=Form, Module) when is_list(Args) ->
     case lists:member(Type, ?UNSUPPORTED_TYPES) of
         true -> throw({unsupported_field, Form, Module});
         false ->
-            {get_module_for_type(Type,Module),
+            {get_module_for_type(Type, Module),
              Type,
              [handle_value_param(Arg, Module) || Arg <- Args]}
     end;
