@@ -1,21 +1,30 @@
+%%% @author Dmitry Groshev <lambdadmitry@gmail.com>
+
 -module(nakaz_core).
--behaviour(gen_server).
--include("nakaz_internal.hrl").
 -compile([{parse_transform, lager_transform}]).
+-behaviour(gen_server).
 
 -include_lib("z_validate/include/z_validate.hrl").
 
+-include("nakaz_internal.hrl").
+
+%% Types
+
+-export_type([option/0, options/0]).
+
 %% API
+
 -export([start_link/1]).
 -export([ensure/4, use/3, reload/0, reload/1]).
 
 %% gen_server callbacks
+
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--export_type([option/0, options/0]).
-
 -define(SERVER, ?MODULE).
+
+%% Types
 
 -record(state, {config_path  :: string(),
                 reload_type  :: reload_type(),
@@ -27,8 +36,6 @@
               reload_type   :: sync | async,
               section_names :: [atom()],
               section_spec  :: record_specs()}).
-
-%% Types
 
 -type option()  :: {reload_type, reload_type()}
                  | {nakaz_loader, module()}.
@@ -56,7 +63,8 @@ reload() ->
 reload(App) ->
     gen_server:call(?SERVER, {reload, App}).
 
-%%% gen_server callbacks
+%% gen_server callbacks
+
 init([ConfPath]) ->
     nakaz_registry = ets:new(nakaz_registry, [named_table, bag]),
     nakaz_apps = ets:new(nakaz_apps, [named_table,
@@ -152,7 +160,7 @@ terminate(_Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
-%%% Internal functions
+%% Internal
 
 -spec reload_config(string()) -> [{atom(),
                                    ok | {error, reload_errors()}}].

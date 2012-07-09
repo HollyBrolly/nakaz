@@ -5,8 +5,7 @@
  [{description, "Config management done right!"},
   {vsn, "0.1.0"},
   {registered, []},
-  %% FIXME(Dmitry): nothing more?
-  {applications, [kernel, stdlib]},
+  {applications, [kernel, stdlib, lager]},
   {mod, {nakaz, []}},
   {env, []}
  ]}.
