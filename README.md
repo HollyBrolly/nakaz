@@ -5,9 +5,7 @@
 
            making sysops happier one at a time!
 
-[![Build Status](https://secure.travis-ci.org/HollyBrolly/nakaz.png)](http://travis-ci.org/HollyBrolly/nakaz)
-
-Is it any good?
+Is it any good? [![Build Status](https://secure.travis-ci.org/HollyBrolly/nakaz.png)](http://travis-ci.org/HollyBrolly/nakaz)
 ---------------
 
 Yes. And **very** useful!
