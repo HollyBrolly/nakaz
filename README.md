@@ -5,40 +5,31 @@
 
            making sysops happier one at a time!
 
-Why the name?
--------------
-
-This is the dumbest name we could come up with, which roughly
-[translates] [1] to `mandate` from old-Russian.
-
-[1]: http://translate.google.com/#ru|en|%D0%BD%D0%B0%D0%BA%D0%B0%D0%B7
-
 Is it any good?
 ---------------
 
-Yes. And very useful!
-
-What is it for?
----------------
-
-For easy and sexy config files processing and easy config reloading support.
+Yes. And **very** useful!
 
 Why do I need it?
 -----------------
 
-Configuration files is usually not the strongest part of Erlang
-applications. The usual way of configuring things is by simply writing
-Erlang terms in some `*.config` file and then either calling
-[file:consult/1](http://www.erlang.org/doc/man/file.html#consult-1)
-directly or loading them in application environment by the OTP machinery.
-While okay for most of Erlang developers, this way of doing configuration
-can hardly be called user friendly.
+Let's admit it, configuring Erlang applications is a **pain**. Not only
+because configuration files are [usually] [1] just a bunch of Erlang
+terms,  which are hard to both read **and** modify for mere humans, but
+also because, in a lot of cases, configured values are more complex
+than the primitives Erlang provides. So, how can `nakaz` help?
 
-In contrast, `nakaz` uses YAML for config files, which easy to both
-read **and**  write, it also takes care of validation, config reloading
-and more!
+Here're the highlights:
 
-See [**Screencast**](http://tiny.cc/nakaz) for a light introduction ;)
+* [YAML] [2] human-readable configuration files;
+* *extensible* typing and validation framework;
+* on-the-fly config reloading
+* ... and more!
+
+[1]: http://www.erlang.org/doc/man/file.html#consult-1
+
+Still not convinced? check out our
+[**screencast**](http://tiny.cc/nakaz) to see `nakaz` in action!
 
 Ho can I use it?
 ----------------
@@ -46,12 +37,12 @@ Ho can I use it?
 (hopefuly) the usage of `nakaz` is pretty straighforward, though you
 still have to keep in mind **two** things:
 
-* `nakaz` uses [YAML] [1] as base configuration format;
-* `nakaz` requires you to structure your [YAML] [1] config in a *special*
+* `nakaz` uses [YAML] [2] as base configuration format;
+* `nakaz` requires you to structure your [YAML] [2] config in a *special*
   way, which is described bellow.
 
 The basic configuration unit in `nakaz` is a **section**, which is
-represented as a **named** [mapping] [2] on the YAML side. Each
+represented as a **named** [mapping] [3] on the YAML side. Each
 configured application can have one or more sections, for example:
 
 ```yaml
@@ -65,7 +56,7 @@ example:
 
 ```
 
-Here, [example] [3] application defines a two sections, named
+Here, [example] [4] application defines a two sections, named
 `log_conf` and `srv_conf`. So, as you might have noticed, the
 expected structure is simple:
 
@@ -93,7 +84,7 @@ configuration files, but this might change in the future versions.
 As we've already mentioned, `nakaz` represents your application
 configuration as sections; what we haven't mentioned is that **every**
 section will be parsed into a **typed** Erlang record! Here's an
-[example] [4]:
+[example] [5]:
 
 ```erlang
 -module(my_awesome_app).
@@ -126,7 +117,7 @@ stop(_State) ->
 
 What happens here? First thing to notice is `{parse_transform, nakaz_pt}`,
 this is **required** for all the record-related magic to happen. Second,
-`?NAKAZ_ENSURE` macro -- as the name suggests, this macro *ensures*
+`?NAKAZ_ENSURE` macro. As the name suggests, this macro *ensures*
 that the configration file actually contains all of the sections, required
 by your application. Moreover, `?NAKAZ_ENSURE` also checks that the
 values in those sections **exactly** match the types you've declared in
@@ -144,15 +135,15 @@ arguments to be records we actually make sure that each of them is
 a valid record and is available in the module scope (which is just what
 `nakaz_pt` needs!).
 
-[1]: http://www.yaml.org
-[2]: http://en.wikipedia.org/wiki/YAML#Associative_arrays
-[3]: https://github.com/Spawnfest2012/holybrolly-nakaz/blob/master/example/priv/conf.yaml
-[4]: https://github.com/Spawnfest2012/holybrolly-nakaz/blob/master/example/src/example_app.erl
+[2]: http://www.yaml.org
+[3]: http://en.wikipedia.org/wiki/YAML#Associative_arrays
+[4]: https://github.com/Spawnfest2012/holybrolly-nakaz/blob/master/example/priv/conf.yaml
+[5]: https://github.com/Spawnfest2012/holybrolly-nakaz/blob/master/example/src/example_app.erl
 
 ### Accessing config sections
 
 Whenever you need to access a specific section from the configuration
-file, simply [call] [5] `?NAKAZ_USE` passing **section name** as an
+file, simply [call] [6] `?NAKAZ_USE` passing **section name** as an
 argument:
 
 ```erlang
@@ -174,8 +165,16 @@ Three awesome facts about `?NAKAZ_USE`:
 * the returned section is guaranteed to be 100% valid, because
   `?NAKAZ_ENSURE` already did all the hard work of type checking and
   validating configuration values;
-* the caller will be notified of section changes, see [nakaz_user] [6]
+* the caller will be notified of section changes, see [nakaz_user] [7]
   documentation for details.
 
-[5]: https://github.com/Spawnfest2012/holybrolly-nakaz/blob/master/example/src/example_srv.erl#L38
-[6]: https://github.com/Spawnfest2012/holybrolly-nakaz/blob/master/src/nakaz_user.erl
+[6]: https://github.com/Spawnfest2012/holybrolly-nakaz/blob/master/example/src/example_srv.erl#L38
+[7]: https://github.com/Spawnfest2012/holybrolly-nakaz/blob/master/src/nakaz_user.erl
+
+Why the name?
+-------------
+
+This is the dumbest name we could come up with, which roughly
+[translates] [8] to `mandate` from old-Russian.
+
+[8]: http://translate.google.com/#ru|en|%D0%BD%D0%B0%D0%BA%D0%B0%D0%B7
