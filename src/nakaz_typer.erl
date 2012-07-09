@@ -34,6 +34,10 @@
 
 -module(nakaz_typer).
 
+-ifdef(DEBUG).
+-compile(export_all).
+-endif.
+
 -include("nakaz_internal.hrl").
 
 %% API
