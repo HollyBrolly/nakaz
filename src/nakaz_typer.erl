@@ -34,7 +34,7 @@
 
 -module(nakaz_typer).
 
--ifdef(DEBUG).
+-ifdef(TEST).
 -compile(export_all).
 -endif.
 
