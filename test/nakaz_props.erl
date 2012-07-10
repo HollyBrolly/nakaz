@@ -40,9 +40,22 @@ well_typed_pos_integer() ->
           list_to_binary(integer_to_list(Value)),
           Value}).
 
+well_typed_neg_integer() ->
+    ?LET(Value, neg_integer(),
+         {{undefined, neg_integer, []},
+          list_to_binary(integer_to_list(Value)),
+          Value}).
+
 well_typed_non_neg_integer() ->
     ?LET(Value, non_neg_integer(),
          {{undefined, non_neg_integer, []},
+          list_to_binary(integer_to_list(Value)),
+          Value}).
+
+well_typed_range() ->
+    {Min, Max} = {0, 16#ffff},
+    ?LET(Value, range(Min, Max),
+         {{undefined, range, [Min, Max]},
           list_to_binary(integer_to_list(Value)),
           Value}).
 
@@ -59,7 +72,9 @@ well_typed_yaml() ->
            well_typed_nonempty_string(),
            well_typed_integer(),
            well_typed_pos_integer(),
+           well_typed_neg_integer(),
            well_typed_non_neg_integer(),
+           well_typed_range(),
            well_typed_float()]).
 
 %% Properties
