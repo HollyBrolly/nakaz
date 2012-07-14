@@ -31,8 +31,13 @@ Here're the highlights:
 Still not convinced? check out our
 [**screencast**](http://tiny.cc/nakaz) to see `nakaz` in action!
 
-Ho can I use it?
-----------------
+Is there an example of this library's use?
+------------------------------------------
+
+Of course, here it is: https://github.com/HollyBrolly/nakaz_example
+
+How can I use it?
+-----------------
 
 (hopefuly) the usage of `nakaz` is pretty straighforward, though you
 still have to keep in mind **two** things:
