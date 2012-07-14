@@ -13,27 +13,27 @@ render(Error) ->
 
 -spec r(any()) -> {string(), [any()]}.
 r({cant_execute_magic_fun, Mod}) ->
-    {"Can't execute 'magic function' that must be generated "
+    {"can't execute 'magic function' that must be generated "
      "by nakaz_pt in module ~s", [Mod]};
 r(config_empty) ->
-    "Ooops, looks like the config is empty";
+    "ooops, looks like the config is empty";
 r({malformed, [{app, {Name, _Body}}|_Rest]}) ->
-    {"Malformed application structure in ~p, sections aren't mappings?",
+    {"malformed application structure in ~p, sections aren't mappings?",
      [Name]};
 r({malformed, [{section, {Name, _Body}}|_Rest]}) ->
-    {"Malformed section structure in ~p, not a mapping?'",
+    {"malformed section structure in ~p, not a mapping?'",
      [Name]};
 r({missing, {app, Name}}) ->
-    {"Missing application ~p", [Name]};
+    {"missing application ~p", [Name]};
 r({missing, {section, Name, App}}) ->
-    {"Missing section ~p for application ~p", [Name, App]};
+    {"missing section ~p for application ~p", [Name, App]};
 r({missing, {field, Name, Section}}) ->
-    {"Missing field ~p in section ~p", [Name, Section]};
+    {"missing field ~p in section ~p", [Name, Section]};
 r({invalid, {Name, Type, Value, {Line, _Column}}}) ->
-    {"Invalid type at line ~p: value ~p for field ~p doesn't match ~s",
+    {"invalid type at line ~p: value ~p for field ~p doesn't match ~s",
      [Line+1, Value, Name, pp_type(Type)]};
 r({unsupported, Line, Mod}) ->
-    {"Unsupported type expression at ~p.erl:~p", [Mod, Line+1]};
+    {"unsupported type expression at ~p.erl:~p", [Mod, Line+1]};
 r(single_config_file_required) ->
     "nakaz requires a single configuration file";
 r(no_config_path_provided) ->
@@ -42,7 +42,7 @@ r(UnknownError) ->
     ok = error_logger:warning_msg("no clause for rendering error ~p", [UnknownError]),
     %% NOTE(Dmitry): the following is Sergei's legacy, please don't touch
     %%               or he'll be a sad panda
-    {"Evil martians are remote controlling your node! maybe that'll help: ~p",
+    {"evil martians are remote controlling your node! maybe that'll help: ~p",
      [UnknownError]}.
 
 -spec pp_type(nakaz_typespec()) -> iolist().
