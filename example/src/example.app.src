@@ -5,7 +5,8 @@
   {registered, []},
   {applications, [
                   kernel,
-                  stdlib
+                  stdlib,
+                  nakaz
                  ]},
   {mod, { example_app, []}},
   {env, []}
