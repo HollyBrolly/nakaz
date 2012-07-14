@@ -61,14 +61,14 @@ start(_StartType, _StartArgs) ->
         {ok, [[ConfPath]]} ->
             nakaz_sup:start_link(ConfPath);
         {ok, _} ->
-            {error, "nakaz requires a single configuration file"};
+            {error, nakaz_errors:render(single_config_file_required)};
         error ->
             case application:get_env(nakaz, config) of
                 {ok, ConfPath} ->
                     nakaz_sup:start_link(ConfPath);
                 _ ->
                     %% FIXME(Dmitry): fix error message
-                    {error, "please provide a path to config file"}
+                    {error, nakaz_errors:render(no_config_path_provide)}
             end
     end.
 

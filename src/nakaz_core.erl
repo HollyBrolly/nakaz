@@ -1,7 +1,6 @@
 %%% @author Dmitry Groshev <lambdadmitry@gmail.com>
 
 -module(nakaz_core).
--compile([{parse_transform, lager_transform}]).
 -behaviour(gen_server).
 
 -include_lib("z_validate/include/z_validate.hrl").
@@ -143,15 +142,15 @@ handle_call({reload, App}, _From, State) ->
        {error, Reason} -> {reply, {error, nakaz_errors:render(Reason)}, State}
     end;
 handle_call(Request, _From, State) ->
-    ok = lager:warning("Unhandled call ~p", [Request]),
+    ok = error_logger:warning_msg("Unhandled call ~p", [Request]),
     {reply, ok, State}.
 
 handle_cast(Msg, State) ->
-    ok = lager:warning("Unhandled cast ~p", [Msg]),
+    ok = error_logger:warning_msg("Unhandled cast ~p", [Msg]),
     {noreply, State}.
 
 handle_info(Info, State) ->
-    ok = lager:warning("Unhandled info ~p", [Info]),
+    ok = error_logger:warning_msg("Unhandled info ~p", [Info]),
     {noreply, State}.
 
 terminate(_Reason, _State) ->

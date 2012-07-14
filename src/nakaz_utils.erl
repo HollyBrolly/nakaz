@@ -6,7 +6,7 @@
 -spec check_config_structure(raw_config()) -> {ok, raw_config()}
                                             | {error, config_structure_error()}.
 check_config_structure([]) ->
-    {error, empty};
+    {error, config_empty};
 check_config_structure([{RawConfig, _pos}]) ->
     case check_config_apps(RawConfig) of
         [] -> {ok, RawConfig};

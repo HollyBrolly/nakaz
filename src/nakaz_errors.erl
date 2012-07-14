@@ -1,5 +1,4 @@
 -module(nakaz_errors).
--compile({parse_transform, lager_transform}).
 
 -include("nakaz_internal.hrl").
 
@@ -7,15 +6,17 @@
 
 -spec render(any()) -> binary().
 render(Error) ->
-    {Msg, Args} = r(Error),
-    iolist_to_binary(io_lib:format(Msg, Args)).
+    case r(Error) of
+        {Msg, Args} -> iolist_to_binary(io_lib:format(Msg, Args));
+        Msg         -> list_to_binary(Msg)
+    end.
 
 -spec r(any()) -> {string(), [any()]}.
 r({cant_execute_magic_fun, Mod}) ->
     {"Can't execute 'magic function' that must be generated "
      "by nakaz_pt in module ~s", [Mod]};
-r(empty) ->
-    {"Ooops, looks like the config is empty", []};
+r(config_empty) ->
+    "Ooops, looks like the config is empty";
 r({malformed, [{app, {Name, _Body}}|_Rest]}) ->
     {"Malformed application structure in ~p, sections aren't mappings?",
      [Name]};
@@ -33,9 +34,14 @@ r({invalid, {Name, Type, Value, {Line, _Column}}}) ->
      [Line+1, Value, Name, pp_type(Type)]};
 r({unsupported, Line, Mod}) ->
     {"Unsupported type expression at ~p.erl:~p", [Mod, Line+1]};
+r(single_config_file_required) ->
+    "nakaz requires a single configuration file";
+r(no_config_path_provided) ->
+    "please provide a path to config file";
 r(UnknownError) ->
-    io:format("~p~n", [UnknownError]),
-    ok = lager:warning("no clause for rendering error ~p", [UnknownError]),
+    ok = erorr_logger:warning_msg("no clause for rendering error ~p", [UnknownError]),
+    %% NOTE(Dmitry): the following is Sergei's legacy, please don't touch
+    %%               or he'll be a sad panda
     {"Evil martians are remote controlling your node! maybe that'll help: ~p",
      [UnknownError]}.
 
