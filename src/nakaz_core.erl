@@ -48,11 +48,30 @@ start_link(ConfPath) ->
 -spec ensure(atom(), atom(),
              [record_()], options()) -> ret_novalue().
 ensure(Mod, App, Sections, Options) ->
-    gen_server:call(?SERVER, {ensure, Mod, App, Sections, Options}).
+    CallArg = {ensure, Mod, App, Sections, Options},
+    case proplists:get_value(nakaz_loader, Options) of
+        undefined ->
+            gen_server:call(?SERVER, CallArg);
+        LoaderMod ->
+            case check_funs_exported(LoaderMod, [{parse, 2},
+                                                 {validate, 2}]) of
+                true ->
+                    gen_server:call(?SERVER, CallArg);
+                false ->
+                    ErrTuple = {loader_behaviour_missing, LoaderMod},
+                    {error, nakaz_errors:render(ErrTuple)}
+            end
+    end.
 
 -spec use(atom(), atom(), T) -> ret_value(T) when T :: record_().
 use(Mod, App, Section) ->
-    gen_server:call(?SERVER, {use, Mod, App, Section}).
+    case check_funs_exported(Mod, [{nakaz_check, 1},
+                                   {nakaz_load, 1}]) of
+        true ->
+            gen_server:call(?SERVER, {use, Mod, App, Section});
+        false ->
+            {error, nakaz_errors:render({user_behaviour_missing, Mod})}
+    end.
 
 -spec reload() -> [{atom(), ret_novalue()}].
 reload() ->
@@ -160,6 +179,15 @@ code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 %% Internal
+
+-spec check_funs_exported(atom(), [{atom(), pos_integer()}]) -> boolean().
+check_funs_exported(Mod, Funs) ->
+    lists:all(fun (Fun) -> check_fun_exported(Mod, Fun) end, Funs).
+
+-spec check_fun_exported(atom(), {atom(), pos_integer()}) -> boolean().
+check_fun_exported(Mod, {_Fun, _Arity}=FA) ->
+    ExportLst = proplists:get_value(exports, Mod:module_info(), []),
+    lists:any(fun (El) -> El == FA end, ExportLst).
 
 -spec reload_config(string()) -> [{atom(),
                                    ok | {error, reload_errors()}}].

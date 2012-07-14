@@ -15,6 +15,12 @@ render(Error) ->
 r({cant_execute_magic_fun, Mod}) ->
     {"can't execute 'magic function' that must be generated "
      "by nakaz_pt in module ~s", [Mod]};
+r({user_behaviour_missing, Mod}) ->
+    {"module ~s use nakaz:use function and therefore should implement "
+     "nakaz_user behaviour", [Mod]};
+r({loader_behaviour_missing, Mod}) ->
+    {"module ~s was used in ensure as nakaz_loader and therefore should "
+     "implement nakaz_loader behaviour", [Mod]};
 r(config_empty) ->
     "ooops, looks like the config is empty";
 r({malformed, [{app, {Name, _Body}}|_Rest]}) ->
