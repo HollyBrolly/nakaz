@@ -39,7 +39,7 @@ r(single_config_file_required) ->
 r(no_config_path_provided) ->
     "please provide a path to config file";
 r(UnknownError) ->
-    ok = erorr_logger:warning_msg("no clause for rendering error ~p", [UnknownError]),
+    ok = error_logger:warning_msg("no clause for rendering error ~p", [UnknownError]),
     %% NOTE(Dmitry): the following is Sergei's legacy, please don't touch
     %%               or he'll be a sad panda
     {"Evil martians are remote controlling your node! maybe that'll help: ~p",
